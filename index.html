@@ -155,8 +155,8 @@
     <label for="phone">Phone</label>
     <input type="text" id="phone" placeholder="Enter phone">
 
-    <label for="batch">Batch</label>
-    <input type="text" id="batch" placeholder="Enter batch">
+    <label for="batch">Year</label>
+    <input type="text" id="batch" placeholder="Enter year">
 
     <label for="amount">Amount</label>
     <input type="number" id="amount" placeholder="Enter amount">
@@ -171,7 +171,7 @@
     <p><b>Name:</b> <span id="rName"></span></p>
     <p><b>Email-ID:</b> <span id="rEmail"></span></p>
     <p><b>Phone No:</b> <span id="rPhone"></span></p>
-    <p><b>Batch:</b> <span id="rBatch"></span></p>
+    <p><b>Year:</b> <span id="rBatch"></span></p>
     <p><b>Amount (in number):</b> ₹<span id="rAmount"></span></p>
     <p><b>Amount (in words):</b> <span id="rAmountWords"></span></p>
     <div class="signature">
@@ -247,7 +247,7 @@
       const receipt = document.getElementById("receipt");
       html2canvas(receipt, { scale: 2 }).then(canvas => {
         const imgData = canvas.toDataURL("image/png");
-        const msg = `Hello ${UserName}, here is your Teachers’ Day 2025 payment receipt. (Image below)`;
+        const msg = `Hello ${UserName}, here is your Teachers’ Day 2025 payment receipt.`;
   
         // WhatsApp link (text only, image sharing requires manual paste/upload)
         const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
