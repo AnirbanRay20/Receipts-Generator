@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teachers’ Day Receipt Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f0f4f9;
+      padding: 20px;
+      margin: 0;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      max-width: 600px;
+      margin: auto;
+      text-align: left;
+      width: 100%;
+    }
+
+    form label {
+      font-weight: 500;
+      display: block;
+      margin-top: 10px;
+    }
+
+    form input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    form button {
+      width: 100%;
+      margin-top: 15px;
+      background: #0066cc;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background: #004d99;
+    }
+
+    .receipt {
+      position: relative;
+      background: white;
+      padding: 20px;
+      margin: 30px auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 650px;
+      width: 100%;
+      border: 2px solid #0066cc;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    /* Responsive Watermark */
+    .receipt::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 70%;
+      height: 70%;
+      background: url("logo.png") no-repeat center;
+      background-size: contain;
+      opacity: 0.08;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    .receipt * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .receipt h3 {
+      text-align: center;
+      text-decoration: underline;
+      color: #222;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+
+    .receipt p {
+      font-size: 0.95rem;
+      margin: 8px 0;
+      line-height: 1.4;
+    }
+
+    .signature {
+      margin-top: 40px;
+      text-align: right;
+    }
+
+    .signature p {
+      font-style: italic;
+      margin-bottom: 5px;
+    }
+
+    .signature img {
+      width: 120px;
+      border-top: 1px solid #444;
+      margin-top: 5px;
+    }
+
+    #downloadIMG {
+      display: none;
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #28a745;
+      color: white;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      width: 100%;
+      max-width: 250px;
+    }
+
+    #downloadIMG:hover {
+      background: #1e7e34;
+    }
+
+    /* Small screens */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      h2 {
+        font-size: 1.3rem;
+      }
+      .receipt {
+        padding: 15px;
+      }
+      .receipt h3 {
+        font-size: 1rem;
+      }
+      .receipt p {
+        font-size: 0.9rem;
+      }
+      .signature img {
+        width: 100px;
+      }
+    }
+
+    
+  </style>
+</head>
+<body>
+
+<h2>Teachers’ Day 2025 Receipt Generator</h2>
+
+<form id="receiptForm">
+  <label>Name:</label>
+  <input type="text" id="name">
+  <label>Email:</label>
+  <input type="email" id="email">
+  <label>Phone:</label>
+  <input type="text" id="phone">
+  <label>Batch:</label>
+  <input type="text" id="batch">
+  <label>Amount (number):</label>
+  <input type="number" id="amount">
+  <button type="button" onclick="generateReceipt()">Generate Receipt</button>
+</form>
+
+<div id="receipt" class="receipt" style="display:none;">
+  <h3>Cash Receipt for Teachers’ Day 2025 for CSE Department</h3>
+  <p><b>Name:</b> <span id="rName"></span></p>
+  <p><b>Email-ID:</b> <span id="rEmail"></span></p>
+  <p><b>Phone No:</b> <span id="rPhone"></span></p>
+  <p><b>Batch:</b> <span id="rBatch"></span></p>
+  <p><b>Amount (in number):</b> ₹<span id="rAmount"></span></p>
+  <p><b>Amount (in words):</b> <span id="rAmountWords"></span></p>
+  <div class="signature">
+    <p>Signature of Receiver:</p>
+    <img src="signature.png" alt="Signature">
+  </div>
+</div>
+
+<button id="downloadIMG" onclick="downloadIMG()">Download Image</button>
+
+<script>
+function numberToWords(num) {
+    const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+    'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const b = ['','', 'Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+
+    if ((num = num.toString()).length > 9) return 'Overflow';
+    let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+    if (!n) return; let str = '';
+    str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' Crore ' : '';
+    str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' Lakh ' : '';
+    str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' Thousand ' : '';
+    str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' Hundred ' : '';
+    str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + ' ' : '';
+    return str + 'Only';
+}
+
+function generateReceipt() {
+  document.getElementById("receipt").style.display = "block";
+  document.getElementById("downloadIMG").style.display = "inline-block";
+
+  let name = document.getElementById("name").value;
+  let email = document.getElementById("email").value;
+  let phone = document.getElementById("phone").value;
+  let batch = document.getElementById("batch").value;
+  let amount = document.getElementById("amount").value;
+
+  document.getElementById("rName").innerText = name;
+  document.getElementById("rEmail").innerText = email;
+  document.getElementById("rPhone").innerText = phone;
+  document.getElementById("rBatch").innerText = batch;
+  document.getElementById("rAmount").innerText = amount;
+  document.getElementById("rAmountWords").innerText = numberToWords(amount);
+}
+
+function downloadIMG() {
+  const receipt = document.getElementById("receipt");
+  html2canvas(receipt, { scale: 2 }).then(canvas => { // higher scale = sharper image
+    const link = document.createElement("a");
+    link.download = "receipt.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+</script>
+
+</body>
+</html>
