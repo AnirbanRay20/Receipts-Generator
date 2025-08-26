@@ -221,33 +221,40 @@ function numberToWords(num) {
     return str + 'Only';
 }
 
+// Declare global variable at top
+let UserName = "User"; // default fallback
+
 function generateReceipt() {
   document.getElementById("receipt").style.display = "block";
   document.getElementById("downloadIMG").style.display = "inline-block";
 
-  let name = document.getElementById("name").value;
+  let name = document.getElementById("name").value.trim();
+  UserName = name ? name.split(" ")[0] : "User";  // store first name or fallback
   let email = document.getElementById("email").value;
   let phone = document.getElementById("phone").value;
   let batch = document.getElementById("batch").value;
   let amount = document.getElementById("amount").value;
 
-  document.getElementById("rName").innerText = name;
-  document.getElementById("rEmail").innerText = email;
-  document.getElementById("rPhone").innerText = phone;
-  document.getElementById("rBatch").innerText = batch;
-  document.getElementById("rAmount").innerText = amount;
+  // Fill receipt preview
+  document.getElementById("rName").innerText = name || "N/A";
+  document.getElementById("rEmail").innerText = email || "N/A";
+  document.getElementById("rPhone").innerText = phone || "N/A";
+  document.getElementById("rBatch").innerText = batch || "N/A";
+  document.getElementById("rAmount").innerText = amount || "0";
   document.getElementById("rAmountWords").innerText = numberToWords(amount);
 }
 
 function downloadIMG() {
   const receipt = document.getElementById("receipt");
-  html2canvas(receipt, { scale: 2 }).then(canvas => { // higher scale = sharper image
+  html2canvas(receipt, { scale: 2 }).then(canvas => {
     const link = document.createElement("a");
-    link.download = "receipt_" + name + ".png";
+    // Use UserName in filename
+    link.download = `receipt_${UserName}.png`;  
     link.href = canvas.toDataURL("image/png");
     link.click();
   });
 }
+
 </script>
 
 </body>
