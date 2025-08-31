@@ -18,7 +18,13 @@ Your **signature image** and the **JIS College of Engineering logo watermark** a
 ---
 
 ## 📂 Project Structure
-
+receipt-generator/
+│── index.html # Main HTML file
+│── style.css # Beautiful CSS for receipt
+│── script.js # Handles form, number-to-words, and image export
+│── signature.png # Your signature image
+│── watermark.png # JISCE logo (used as watermark)
+│── README.md # Documentation
 ---
 
 ## ⚙️ Setup Instructions
